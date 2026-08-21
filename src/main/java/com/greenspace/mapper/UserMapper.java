@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    UserResponse toUserResponse(User user);
+    UserResponse toResponse(User user);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "isBlocked", ignore = true)
