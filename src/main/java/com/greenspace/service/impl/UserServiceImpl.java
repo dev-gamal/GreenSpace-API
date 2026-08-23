@@ -7,7 +7,7 @@ import com.greenspace.mapper.UserMapper;
 import com.greenspace.repository.UserRepository;
 import com.greenspace.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
