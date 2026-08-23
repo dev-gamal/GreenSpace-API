@@ -2,6 +2,8 @@ package com.greenspace.repository;
 
 import com.greenspace.entity.Reservation;
 import com.greenspace.enums.ReservationStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,10 +13,10 @@ import java.util.List;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
-    List<Reservation> findByGardenerId(Long gardenerId);
+    Page<Reservation> findByGardenerId(Long gardenerId, Pageable pageable);
 
     @Query("SELECT r FROM Reservation r JOIN r.garden g WHERE g.owner.id = :ownerId ORDER BY r.createdAt DESC")
-    List<Reservation> findRequestsForOwner(@Param("ownerId") Long ownerId);
+    Page<Reservation> findRequestsForOwner(@Param("ownerId") Long ownerId, Pageable pageable);
 
     @Query("SELECT COUNT(r) > 0 FROM Reservation r WHERE r.garden.id = :gardenId " +
             "AND r.gardener.id = :gardenerId AND r.status IN (:statuses)")

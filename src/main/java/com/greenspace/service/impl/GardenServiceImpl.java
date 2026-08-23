@@ -12,6 +12,8 @@ import com.greenspace.repository.UserRepository;
 import com.greenspace.service.GardenService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,7 +49,7 @@ public class GardenServiceImpl implements GardenService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public GardenResponse getGardenById(Long id) {
         return gardenRepository.findById(id)
                 .map(gardenMapper::toResponse)
@@ -55,19 +57,17 @@ public class GardenServiceImpl implements GardenService {
     }
 
     @Override
-    @Transactional
-    public List<GardenResponse> getGardensByOwner(Long ownerId) {
-        return gardenRepository.findByOwnerId(ownerId).stream()
-                .map(gardenMapper::toResponse)
-                .toList();
+    @Transactional(readOnly = true)
+    public Page<GardenResponse> getGardensByOwner(Long ownerId, Pageable pageable) {
+        return gardenRepository.findByOwnerId(ownerId, pageable)
+                .map(gardenMapper::toResponse);
     }
 
     @Override
-    @Transactional
-    public List<GardenResponse> searchAvailableGardens(String city, Double minArea) {
-        return gardenRepository.searchAvailableGardens(GardenStatus.AVAILABLE, city, minArea).stream()
-                .map(gardenMapper::toResponse)
-                .toList();
+    @Transactional(readOnly = true)
+    public Page<GardenResponse> searchAvailableGardens(String city, Double minArea, Pageable pageable) {
+        return gardenRepository.searchAvailableGardens(GardenStatus.AVAILABLE, city, minArea, pageable)
+                .map(gardenMapper::toResponse);
     }
 
     @Override
