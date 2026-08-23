@@ -13,6 +13,8 @@ import com.greenspace.repository.UserRepository;
 import com.greenspace.service.ReservationService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,18 +63,16 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    @Transactional
-    public List<ReservationResponse> getReservationsByGardener(Long gardenerId) {
-        return reservationRepository.findByGardenerId(gardenerId).stream()
-                .map(reservationMapper::toResponse)
-                .toList();
+    @Transactional(readOnly = true)
+    public Page<ReservationResponse> getReservationsByGardener(Long gardenerId, Pageable pageable) {
+        return reservationRepository.findByGardenerId(gardenerId, pageable)
+                .map(reservationMapper::toResponse);
     }
 
     @Override
-    @Transactional
-    public List<ReservationResponse> getReservationRequestsForOwner(Long ownerId) {
-        return reservationRepository.findRequestsForOwner(ownerId).stream()
-                .map(reservationMapper::toResponse)
-                .toList();
+    @Transactional(readOnly = true)
+    public Page<ReservationResponse> getReservationRequestsForOwner(Long ownerId, Pageable pageable) {
+        return reservationRepository.findRequestsForOwner(ownerId, pageable)
+                .map(reservationMapper::toResponse);
     }
 }

@@ -12,10 +12,10 @@ import com.greenspace.repository.UserRepository;
 import com.greenspace.service.ProductService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +40,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public ProductResponse getProductById(Long id) {
         return productRepository.findById(id)
                 .map(productMapper::toResponse)
@@ -48,19 +48,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional
-    public List<ProductResponse> getProductsByPublisher(Long publisherId) {
-        return productRepository.findByPublisherId(publisherId).stream()
-                .map(productMapper::toResponse)
-                .toList();
+    @Transactional(readOnly = true)
+    public Page<ProductResponse> getProductsByPublisher(Long publisherId, Pageable pageable) {
+        return productRepository.findByPublisherId(publisherId, pageable)
+                .map(productMapper::toResponse);
     }
 
     @Override
-    @Transactional
-    public List<ProductResponse> getLocalMarketProducts(ExchangeType exchangeType, String city) {
-        return productRepository.findLocalMarketProducts(exchangeType, city).stream()
-                .map(productMapper::toResponse)
-                .toList();
+    @Transactional(readOnly = true)
+    public Page<ProductResponse> getLocalMarketProducts(ExchangeType exchangeType, String city, Pageable pageable) {
+        return productRepository.findLocalMarketProducts(exchangeType, city, pageable)
+                .map(productMapper::toResponse);
     }
 
     @Override

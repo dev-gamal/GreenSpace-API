@@ -49,7 +49,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ChatMessageResponse> getConversationHistory(Long user1Id, Long user2Id) {
         return chatMessageRepository.findConversationHistory(user1Id, user2Id).stream()
                 .map(chatMessageMapper::toResponse)
@@ -57,7 +57,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public long getUnreadMessagesCount(Long userId) {
         return chatMessageRepository.countUnreadMessages(userId);
     }
