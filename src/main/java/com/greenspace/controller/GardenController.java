@@ -60,7 +60,7 @@ public class GardenController {
         return ResponseEntity.ok(gardenService.updateGardenStatus(id, status));
     }
 
-    @DeleteMapping("/#{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteGarden(
             @PathVariable Long id,
             @RequestParam Long ownerId) {
