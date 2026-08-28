@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class GardenController {
     private final GardenService gardenService;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('OWNER')")
     public ResponseEntity<GardenResponse> createGarden(
             @Valid @RequestBody GardenRequest request,
             @RequestParam Long ownerId,
@@ -34,11 +36,13 @@ public class GardenController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<GardenResponse> getGarden(@PathVariable Long id) {
         return ResponseEntity.ok(gardenService.getGardenById(id));
     }
 
     @GetMapping("/search")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Page<GardenResponse>> searchGardens(
             @RequestParam String city,
             @RequestParam Double minArea,
@@ -47,6 +51,7 @@ public class GardenController {
     }
 
     @GetMapping("/owner/{ownerId}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Page<GardenResponse>> getGardenByOwner(
             @PathVariable Long ownerId,
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
@@ -54,6 +59,7 @@ public class GardenController {
     }
 
     @PutMapping("/{id}/status")
+    @PreAuthorize("hasAnyAuthority('OWNER', 'ADMIN')")
     public ResponseEntity<GardenResponse> updateStatus(
             @PathVariable Long id,
             @RequestParam GardenStatus status) {
@@ -61,6 +67,7 @@ public class GardenController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('OWNER', 'ADMIN')")
     public ResponseEntity<Void> deleteGarden(
             @PathVariable Long id,
             @RequestParam Long ownerId) {

@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,6 +23,7 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('GARDENER')")
     public ResponseEntity<ReservationResponse> createReservation(
             @Valid @RequestBody ReservationRequest request,
             @RequestParam Long gardenerId) {
@@ -31,6 +33,7 @@ public class ReservationController {
     }
 
     @PutMapping("/{id}/status")
+    @PreAuthorize("hasAuthority('OWNER')")
     public ResponseEntity<ReservationResponse> updateStatus(
             @PathVariable Long id,
             @RequestParam Long ownerId,
@@ -40,6 +43,7 @@ public class ReservationController {
     }
 
     @GetMapping("/gardener/{gardenerId}")
+    @PreAuthorize("hasAuthority('GARDENER')")
     public ResponseEntity<Page<ReservationResponse>> getGardenerReservations(
             @PathVariable Long gardenerId,
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
@@ -48,6 +52,7 @@ public class ReservationController {
     }
 
     @GetMapping("/owner/{ownerId}/requests")
+    @PreAuthorize("hasAuthority('OWNER')")
     public ResponseEntity<Page<ReservationResponse>> getOwnerRequests(
             @PathVariable Long ownerId,
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {

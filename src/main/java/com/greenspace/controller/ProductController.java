@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,6 +23,7 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('GARDENER', 'OWNER')")
     public ResponseEntity<ProductResponse> createProduct(
             @Valid @RequestBody ProductRequest request,
             @RequestParam Long publisherId,
@@ -31,11 +33,13 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ProductResponse> getProduct(@PathVariable Long id) {
         return ResponseEntity.ok(productService.getProductById(id));
     }
 
     @GetMapping("/market")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Page<ProductResponse>> getMarketProducts(
             @RequestParam ExchangeType exchangeType,
             @RequestParam String city,
@@ -45,6 +49,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('GARDENER', 'OWNER', 'ADMIN')")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id, @RequestParam Long publisherId) {
         productService.deleteProduct(id, publisherId);
         return ResponseEntity.noContent().build();
