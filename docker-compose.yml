@@ -4,7 +4,7 @@ services:
   db:
     image: mysql:8.0
     container_name: greenspace-mysql
-    restart: always
+    restart: no
     environment:
       MYSQL_DATABASE: greenspace_db
       MYSQL_ROOT_PASSWORD: SpringBoot2026
@@ -16,10 +16,19 @@ services:
     networks:
       - greenspace-network
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_password" ]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pSpringBoot2026" ]
       interval: 5s
       timeout: 5s
       retries: 10
+
+  redis:
+    image: redis:alpine
+    container_name: greenspace-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - greenspace-network
 
   backend:
     build: .
@@ -28,13 +37,17 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/greenspace_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/greenspace_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=SpringBoot2026
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
       - SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT=60000
+      - REDIS_HOST=redis
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
     networks:
       - greenspace-network
 
