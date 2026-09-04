@@ -51,8 +51,57 @@ services:
     networks:
       - greenspace-network
 
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: greenspace-prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/alerts.yml:/etc/prometheus/alerts.yml
+    ports:
+      - "9090:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+      - greenspace-network
+    restart: unless-stopped
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: greenspace-alertmanager
+    volumes:
+      - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    ports:
+      - "9093:9093"
+    networks:
+      - greenspace-network
+    restart: unless-stopped
+
+  loki:
+    image: grafana/loki:latest
+    container_name: greenspace-loki
+    ports:
+      - "3100:3100"
+    networks:
+      - greenspace-network
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: greenspace-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - prometheus
+      - loki
+    networks:
+      - greenspace-network
+    restart: unless-stopped
+
 volumes:
   greenspace_db_data:
+    driver: local
 
 networks:
   greenspace-network:

@@ -1,0 +1,38 @@
+groups:
+  - name: logitrack-alerts
+    rules:
+      - alert: LogiTrackApiDown
+        expr: up{job="logitrack-api"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "LogiTrack API is down"
+          description: "The logitrack-api instance is not responding to Prometheus scraping for over a minute."
+
+      - alert: HighHttpErrorRate
+        expr: rate(http_server_requests_seconds_count{status=~"5.."}[5m]) > 5
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Critical 5xx error rate"
+          description: "The server is generating more than 5 errors (500+) per second on average over the last 5 minutes."
+
+      - alert: HighLatency
+        expr: rate(http_server_requests_seconds_sum[2m]) / rate(http_server_requests_seconds_count[2m]) > 2
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High API Latency"
+          description: "The average API response time exceeds 2 seconds."
+
+      - alert: MemorySaturated
+        expr: (jvm_memory_used_bytes{area="heap"} / jvm_memory_max_bytes{area="heap"}) * 100 > 85
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Critical Memory Usage"
+          description: "JVM heap memory usage exceeded 85%.."
