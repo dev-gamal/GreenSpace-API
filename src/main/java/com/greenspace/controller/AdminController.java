@@ -1,6 +1,7 @@
 package com.greenspace.controller;
 
 import com.greenspace.dto.response.AdminStateResponse;
+import com.greenspace.dto.response.UserResponse;
 import com.greenspace.enums.GardenStatus;
 import com.greenspace.repository.GardenRepository;
 import com.greenspace.repository.ProductRepository;
@@ -12,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -26,6 +29,11 @@ public class AdminController {
 
     private final UserService userService;
     private final GardenService gardenService;
+
+    @GetMapping("/users")
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
 
     @GetMapping("/stats")
     public ResponseEntity<AdminStateResponse> getDashboard() {
