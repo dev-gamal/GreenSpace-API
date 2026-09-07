@@ -3,6 +3,7 @@ package com.greenspace.service.impl;
 import com.greenspace.dto.request.UserRegistrationRequest;
 import com.greenspace.dto.response.UserResponse;
 import com.greenspace.entity.User;
+import com.greenspace.enums.Role;
 import com.greenspace.mapper.UserMapper;
 import com.greenspace.repository.UserRepository;
 import com.greenspace.service.UserService;
@@ -68,5 +69,13 @@ public class UserServiceImpl implements UserService {
                 orElseThrow(() -> new EntityNotFoundException("User not found"));
         user.setIsBlocked(!user.getIsBlocked());
         userRepository.save(user);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserResponse> getUsersByRoleAndCity(Role role, String city) {
+        return userRepository.findByRoleAndCity(role, city).stream()
+                .map(userMapper::toResponse)
+                .collect(Collectors.toList());
     }
 }

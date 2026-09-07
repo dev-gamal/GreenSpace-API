@@ -3,6 +3,7 @@ package com.greenspace.controller;
 import com.greenspace.dto.response.AdminStateResponse;
 import com.greenspace.dto.response.UserResponse;
 import com.greenspace.enums.GardenStatus;
+import com.greenspace.enums.Role;
 import com.greenspace.repository.GardenRepository;
 import com.greenspace.repository.ProductRepository;
 import com.greenspace.repository.ReservationRepository;
@@ -33,6 +34,16 @@ public class AdminController {
     @GetMapping("/users")
     public ResponseEntity<List<UserResponse>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    @GetMapping("/users/{id}")
+    public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getUserById(id));
+    }
+
+    @GetMapping("/users/search")
+    public ResponseEntity<List<UserResponse>> getUsersByRoleAndCity(@RequestParam String role, @RequestParam String city) {
+        return ResponseEntity.ok(userService.getUsersByRoleAndCity(role.equalsIgnoreCase("ADMIN") ? null : role.equalsIgnoreCase("OWNER") ? Role.OWNER : null, city));
     }
 
     @GetMapping("/stats")
