@@ -48,6 +48,14 @@ public class ProductController {
         return ResponseEntity.ok(productService.getLocalMarketProducts(exchangeType, city, pageable));
     }
 
+    @GetMapping("/publisher/{publisherId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Page<ProductResponse>> getProductsByPublisher(
+            @PathVariable Long publisherId,
+            @PageableDefault(size = 12, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        return ResponseEntity.ok(productService.getProductsByPublisher(publisherId, pageable));
+    }
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('GARDENER', 'OWNER', 'ADMIN')")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id, @RequestParam Long publisherId) {
