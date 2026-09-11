@@ -8,6 +8,4 @@ import java.util.List;
 
 @Repository
 public interface GardenPhotoRepository extends JpaRepository<GardenPhoto, Long> {
-
-    List<GardenPhoto> findByGardenId(Long gardenId);
 }

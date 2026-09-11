@@ -19,4 +19,8 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
 
     @Query("SELECT COUNT(c) FROM ChatMessage c WHERE c.recipient.id = :userId AND c.isRead = false")
     long countUnreadMessages(@Param("userId") Long userId);
+
+    @org.springframework.data.jpa.repository.Modifying
+    @Query("UPDATE ChatMessage c SET c.isRead = true WHERE c.sender.id = :senderId AND c.recipient.id = :recipientId AND c.isRead = false")
+    void markConversationAsRead(@Param("senderId") Long senderId, @Param("recipientId") Long recipientId);
 }

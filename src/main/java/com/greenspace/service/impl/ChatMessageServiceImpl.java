@@ -64,11 +64,6 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     @Override
     public void markConversationAsRead(Long senderId, Long recipientId) {
-        List<ChatMessage> unreadMessages = chatMessageRepository.findConversationHistory(senderId, recipientId).stream()
-                .filter(msg -> msg.getRecipient().getId().equals(recipientId) && !msg.getIsRead())
-                .toList();
-
-        unreadMessages.forEach(msg -> msg.setIsRead(true));
-        chatMessageRepository.saveAll(unreadMessages);
+        chatMessageRepository.markConversationAsRead(senderId, recipientId);
     }
 }
