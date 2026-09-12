@@ -51,6 +51,17 @@ services:
     networks:
       - greenspace-network
 
+  frontend:
+    build: ../GreenSpace-Frontend
+    container_name: greenspace-frontend
+    restart: always
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    networks:
+      - greenspace-network
+
   prometheus:
     image: prom/prometheus:latest
     container_name: greenspace-prometheus
