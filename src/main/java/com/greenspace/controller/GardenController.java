@@ -42,7 +42,6 @@ public class GardenController {
     }
 
     @GetMapping("/search")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Page<GardenResponse>> searchGardens(
             @RequestParam String city,
             @RequestParam Double minArea,
