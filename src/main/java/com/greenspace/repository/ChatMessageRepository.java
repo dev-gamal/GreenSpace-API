@@ -23,4 +23,17 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
     @org.springframework.data.jpa.repository.Modifying
     @Query("UPDATE ChatMessage c SET c.isRead = true WHERE c.sender.id = :senderId AND c.recipient.id = :recipientId AND c.isRead = false")
     void markConversationAsRead(@Param("senderId") Long senderId, @Param("recipientId") Long recipientId);
+
+    @Query("SELECT DISTINCT CASE WHEN c.sender.id = :userId THEN c.recipient.id ELSE c.sender.id END " +
+            "FROM ChatMessage c WHERE c.sender.id = :userId OR c.recipient.id = :userId")
+    List<Long> findConversationUserIds(@Param("userId") Long userId);
+
+    @Query("SELECT COUNT(c) FROM ChatMessage c WHERE c.sender.id = :senderId AND c.recipient.id = :recipientId AND c.isRead = false")
+    long countUnreadMessagesFromUser(@Param("senderId") Long senderId, @Param("recipientId") Long recipientId);
+
+    @Query(value = "SELECT * FROM chat_messages c WHERE " +
+            "(c.sender_id = :user1Id AND c.recipient_id = :user2Id) OR " +
+            "(c.sender_id = :user2Id AND c.recipient_id = :user1Id) " +
+            "ORDER BY c.timestamp DESC LIMIT 1", nativeQuery = true)
+    ChatMessage findLastMessage(@Param("user1Id") Long user1Id, @Param("user2Id") Long user2Id);
 }

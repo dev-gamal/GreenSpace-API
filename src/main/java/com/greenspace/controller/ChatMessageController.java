@@ -1,6 +1,7 @@
 package com.greenspace.controller;
 
 import com.greenspace.dto.response.ChatMessageResponse;
+import com.greenspace.dto.response.ConversationResponse;
 import com.greenspace.service.ChatMessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -37,5 +38,11 @@ public class ChatMessageController {
             @RequestParam Long recipientId) {
         chatMessageService.markConversationAsRead(senderId, recipientId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/conversations")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<ConversationResponse>> getConversations(@RequestParam Long userId) {
+        return ResponseEntity.ok(chatMessageService.getConversations(userId));
     }
 }

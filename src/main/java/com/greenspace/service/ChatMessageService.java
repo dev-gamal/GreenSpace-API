@@ -2,6 +2,7 @@ package com.greenspace.service;
 
 import com.greenspace.dto.request.ChatMessageRequest;
 import com.greenspace.dto.response.ChatMessageResponse;
+import com.greenspace.dto.response.ConversationResponse;
 
 import java.util.List;
 
@@ -10,4 +11,5 @@ public interface ChatMessageService {
     List<ChatMessageResponse> getConversationHistory(Long user1Id, Long user2Id);
     long getUnreadMessagesCount(Long userId);
     void markConversationAsRead(Long senderId, Long recipientId);
+    List<ConversationResponse> getConversations(Long userId);
 }

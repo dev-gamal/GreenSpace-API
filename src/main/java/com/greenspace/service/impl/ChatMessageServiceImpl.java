@@ -2,6 +2,7 @@ package com.greenspace.service.impl;
 
 import com.greenspace.dto.request.ChatMessageRequest;
 import com.greenspace.dto.response.ChatMessageResponse;
+import com.greenspace.dto.response.ConversationResponse;
 import com.greenspace.entity.ChatMessage;
 import com.greenspace.entity.Product;
 import com.greenspace.entity.User;
@@ -65,5 +66,31 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     @Override
     public void markConversationAsRead(Long senderId, Long recipientId) {
         chatMessageRepository.markConversationAsRead(senderId, recipientId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ConversationResponse> getConversations(Long userId) {
+        List<Long> contactIds = chatMessageRepository.findConversationUserIds(userId);
+
+        return contactIds.stream().map(contactId -> {
+            User contact = userRepository.findById(contactId)
+                    .orElseThrow(() -> new EntityNotFoundException("User not found"));
+            ChatMessage lastMsg = chatMessageRepository.findLastMessage(userId, contactId);
+            long unread = chatMessageRepository.countUnreadMessagesFromUser(contactId, userId);
+
+            return ConversationResponse.builder()
+                    .userId(contact.getId())
+                    .firstName(contact.getFirstName())
+                    .lastName(contact.getLastName())
+                    .lastMessage(lastMsg != null ? lastMsg.getContent() : "")
+                    .lastMessageTime(lastMsg != null ? lastMsg.getTimestamp() : null)
+                    .unreadCount(unread)
+                    .build();
+        }).sorted((a, b) -> {
+            if (a.getLastMessageTime() == null) return 1;
+            if (b.getLastMessageTime() == null) return -1;
+            return b.getLastMessageTime().compareTo(a.getLastMessageTime());
+        }).toList();
     }
 }
