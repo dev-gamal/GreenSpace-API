@@ -9,7 +9,7 @@ services:
       MYSQL_DATABASE: greenspace_db
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
-      - "3306:3306"
+      - "${DB_PORT}:3306"
     volumes:
       - greenspace_db_data:/var/lib/mysql
     command: --default-authentication-plugin=mysql_native_password
@@ -26,7 +26,7 @@ services:
     container_name: greenspace-redis
     restart: always
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT}:6379"
     networks:
       - greenspace-network
 
@@ -35,14 +35,14 @@ services:
     container_name: greenspace-backend
     restart: always
     ports:
-      - "8080:8080"
+      - "${SERVER_PORT}:8080"
     environment:
       - SPRING_DATASOURCE_URL=${DB_URL}
       - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
       - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
       - SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT=60000
-      - REDIS_HOST=redis
+      - REDIS_HOST=${REDIS_HOST}
     depends_on:
       db:
         condition: service_healthy
