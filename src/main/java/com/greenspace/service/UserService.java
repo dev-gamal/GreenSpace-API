@@ -14,4 +14,5 @@ public interface UserService {
     List<UserResponse> getAllUsers();
     List<UserResponse> getUsersByRoleAndCity(Role role, String city);
     void blockedUser(Long id);
+    List<UserResponse> searchUsers(String query);
 }

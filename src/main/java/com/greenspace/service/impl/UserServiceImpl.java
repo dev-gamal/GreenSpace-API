@@ -78,4 +78,12 @@ public class UserServiceImpl implements UserService {
                 .map(userMapper::toResponse)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserResponse> searchUsers(String query) {
+        return userRepository.searchByName(query).stream()
+                .map(userMapper::toResponse)
+                .collect(Collectors.toList());
+    }
 }

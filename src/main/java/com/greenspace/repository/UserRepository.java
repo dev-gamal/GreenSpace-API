@@ -20,4 +20,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.role = :role AND LOWER(u.city) LIKE LOWER(CONCAT('%', :city, '%'))")
     List<User> findByRoleAndCity(@Param("role") Role role,
                                  @Param("city") String city);
+
+    @Query("SELECT u FROM User u WHERE " +
+            "LOWER(u.firstName) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+            "LOWER(u.lastName) LIKE LOWER(CONCAT('%', :query, '%'))")
+    List<User> searchByName(@Param("query") String query);
 }
