@@ -14,5 +14,6 @@ public interface GardenService {
     Page<GardenResponse> getGardensByOwner(Long ownerId, Pageable pageable);
     Page<GardenResponse> searchAvailableGardens(String city, Double minArea, Pageable pageable);
     GardenResponse updateGardenStatus(Long id, GardenStatus status);
-    void deleteGarden(Long id, Long ownerId);
+    GardenResponse updateGarden(Long id, GardenRequest request, List<String> photoUrls, Long callerId, boolean isAdmin);
+    void deleteGarden(Long id, Long callerId, boolean isAdmin);
 }

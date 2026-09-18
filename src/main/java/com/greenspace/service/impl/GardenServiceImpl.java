@@ -79,13 +79,44 @@ public class GardenServiceImpl implements GardenService {
     }
 
     @Override
-    public void deleteGarden(Long id, Long ownerId) {
+    public void deleteGarden(Long id, Long callerId, boolean isAdmin) {
         Garden garden = gardenRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Garden not found"));
 
-        if (!garden.getOwner().getId().equals(ownerId)) {
+        if (!isAdmin && !garden.getOwner().getId().equals(callerId)) {
             throw new IllegalArgumentException("You're not allowed to delete this garden");
         }
         gardenRepository.delete(garden);
+    }
+
+    @Override
+    public GardenResponse updateGarden(Long id, GardenRequest request, List<String> photoUrls, Long callerId, boolean isAdmin) {
+        Garden garden = gardenRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Garden not found"));
+
+        if (!isAdmin && !garden.getOwner().getId().equals(callerId)) {
+            throw new IllegalArgumentException("You're not allowed to edit this garden");
+        }
+
+        garden.setTitle(request.getTitle());
+        garden.setDescription(request.getDescription());
+        garden.setAreaSize(request.getAreaSize());
+        garden.setLatitude(request.getLatitude());
+        garden.setLongitude(request.getLongitude());
+        garden.setAddress(request.getAddress());
+        garden.setCity(request.getCity());
+        garden.setPostalCode(request.getPostalCode());
+        garden.setRules(request.getRules());
+        garden.setHasTools(request.getHasTools());
+
+        garden.getPhotos().clear();
+        if (photoUrls != null && !photoUrls.isEmpty()) {
+            List<GardenPhoto> newPhotos = photoUrls.stream()
+                    .map(url -> GardenPhoto.builder().photoUrl(url).garden(garden).build())
+                    .toList();
+            garden.getPhotos().addAll(newPhotos);
+        }
+
+        return gardenMapper.toResponse(gardenRepository.save(garden));
     }
 }

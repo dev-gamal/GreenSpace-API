@@ -15,6 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.List;
 
 @RestController
@@ -57,6 +60,18 @@ public class GardenController {
         return ResponseEntity.ok(gardenService.getGardensByOwner(ownerId, pageable));
     }
 
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('OWNER', 'ADMIN')")
+    public ResponseEntity<GardenResponse> updateGarden(
+            @PathVariable Long id,
+            @Valid @RequestBody GardenRequest request,
+            @RequestParam(required = false) List<String> photoUrls,
+            Authentication authentication) {
+        Long callerId = Long.valueOf(authentication.getName());
+        boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"));
+        return ResponseEntity.ok(gardenService.updateGarden(id, request, photoUrls != null ? photoUrls : List.of(), callerId, isAdmin));
+    }
+
     @PutMapping("/{id}/status")
     @PreAuthorize("hasAnyAuthority('OWNER', 'ADMIN')")
     public ResponseEntity<GardenResponse> updateStatus(
@@ -69,8 +84,10 @@ public class GardenController {
     @PreAuthorize("hasAnyAuthority('OWNER', 'ADMIN')")
     public ResponseEntity<Void> deleteGarden(
             @PathVariable Long id,
-            @RequestParam Long ownerId) {
-        gardenService.deleteGarden(id, ownerId);
+            Authentication authentication) {
+        Long callerId = Long.valueOf(authentication.getName());
+        boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"));
+        gardenService.deleteGarden(id, callerId, isAdmin);
         return ResponseEntity.noContent().build();
     }
 }
