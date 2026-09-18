@@ -29,5 +29,11 @@ public class ChatController {
                 "/queue/messages",
                 savedMessage
         );
+
+        messagingTemplate.convertAndSendToUser(
+                String.valueOf(senderId),
+                "/queue/messages",
+                savedMessage
+        );
     }
 }
