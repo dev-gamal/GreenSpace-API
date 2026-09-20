@@ -33,4 +33,6 @@ public class GardenRequest {
     private String rules;
 
     private Boolean hasTools;
+
+    private java.util.List<String> photoUrls;
 }

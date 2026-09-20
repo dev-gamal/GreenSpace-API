@@ -31,10 +31,9 @@ public class GardenController {
     @PreAuthorize("hasAuthority('OWNER')")
     public ResponseEntity<GardenResponse> createGarden(
             @Valid @RequestBody GardenRequest request,
-            @RequestParam Long ownerId,
-            @RequestParam List<String> photoUrls) {
+            @RequestParam Long ownerId) {
 
-        GardenResponse response = gardenService.createGarden(request, ownerId, photoUrls);
+        GardenResponse response = gardenService.createGarden(request, ownerId, request.getPhotoUrls() != null ? request.getPhotoUrls() : List.of());
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -65,11 +64,10 @@ public class GardenController {
     public ResponseEntity<GardenResponse> updateGarden(
             @PathVariable Long id,
             @Valid @RequestBody GardenRequest request,
-            @RequestParam(required = false) List<String> photoUrls,
             Authentication authentication) {
         Long callerId = Long.valueOf(authentication.getName());
         boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"));
-        return ResponseEntity.ok(gardenService.updateGarden(id, request, photoUrls != null ? photoUrls : List.of(), callerId, isAdmin));
+        return ResponseEntity.ok(gardenService.updateGarden(id, request, request.getPhotoUrls() != null ? request.getPhotoUrls() : List.of(), callerId, isAdmin));
     }
 
     @PutMapping("/{id}/status")
