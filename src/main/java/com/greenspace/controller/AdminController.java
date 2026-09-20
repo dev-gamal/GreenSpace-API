@@ -58,6 +58,12 @@ public class AdminController {
         return ResponseEntity.ok(stats);
     }
 
+    @GetMapping("/gardens")
+    public ResponseEntity<org.springframework.data.domain.Page<com.greenspace.dto.response.GardenResponse>> getAllGardens(
+            org.springframework.data.domain.Pageable pageable) {
+        return ResponseEntity.ok(gardenService.getAllGardens(pageable));
+    }
+
     @PutMapping("/users/{id}/toggle-block")
     public ResponseEntity<Void> toggleUserBlock(@PathVariable Long id) {
         userService.blockedUser(id);

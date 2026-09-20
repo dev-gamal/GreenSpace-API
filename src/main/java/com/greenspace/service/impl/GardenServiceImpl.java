@@ -71,6 +71,12 @@ public class GardenServiceImpl implements GardenService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Page<GardenResponse> getAllGardens(Pageable pageable) {
+        return gardenRepository.findAll(pageable).map(gardenMapper::toResponse);
+    }
+
+    @Override
     public GardenResponse updateGardenStatus(Long id, GardenStatus status) {
         Garden garden = gardenRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Garden not found"));
