@@ -7,33 +7,12 @@ on:
     branches: [ master, develop ]
 
 jobs:
+  # ──────────────────────────────────────────────
+  # Build, Test & Package
+  # ──────────────────────────────────────────────
   build:
     name: Build & Test
     runs-on: ubuntu-latest
-
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_DATABASE: greenspace_db
-          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping -h localhost"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
-      redis:
-        image: redis:alpine
-        ports:
-          - 6379:6379
-        options: >-
-          --health-cmd="redis-cli ping"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
 
     steps:
       - name: Checkout code
@@ -58,14 +37,6 @@ jobs:
         run: mvn clean compile -B
 
       - name: Run tests
-        env:
-          SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/greenspace_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-          SPRING_DATASOURCE_USERNAME: ${{ secrets.DB_USERNAME }}
-          SPRING_DATASOURCE_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
-          REDIS_HOST: localhost
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          JWT_EXPIRATION_MS: 86400000
         run: mvn test -B
 
       - name: Package JAR
@@ -78,6 +49,9 @@ jobs:
           path: target/*.jar
           retention-days: 7
 
+  # ──────────────────────────────────────────────
+  # Code Quality — SonarCloud
+  # ──────────────────────────────────────────────
   sonar:
     name: SonarQube Analysis
     runs-on: ubuntu-latest
