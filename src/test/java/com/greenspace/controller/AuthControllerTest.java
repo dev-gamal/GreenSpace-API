@@ -5,6 +5,7 @@ import com.greenspace.dto.request.UserLoginRequest;
 import com.greenspace.dto.request.UserRegistrationRequest;
 import com.greenspace.dto.response.UserResponse;
 import com.greenspace.enums.Role;
+import com.greenspace.security.CustomUserDetailsService;
 import com.greenspace.security.JwtTokenProvider;
 import com.greenspace.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,6 +44,9 @@ class AuthControllerTest {
 
     @MockBean
     private JwtTokenProvider tokenProvider;
+
+    @MockBean
+    private CustomUserDetailsService customUserDetailsService;
 
     private UserRegistrationRequest registrationRequest;
     private UserLoginRequest loginRequest;
