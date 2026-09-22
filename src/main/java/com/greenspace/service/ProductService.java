@@ -12,6 +12,7 @@ public interface ProductService {
     ProductResponse createProduct(ProductRequest request, Long publisherId, String imageUrl);
     ProductResponse getProductById(Long id);
     Page<ProductResponse> getProductsByPublisher(Long publisherId, Pageable pageable);
+    Page<ProductResponse> getAllAvailableProducts(ExchangeType exchangeType, Pageable pageable);
     Page<ProductResponse> getLocalMarketProducts(ExchangeType exchangeType, String city, Pageable pageable);
     void deleteProduct(Long id, Long publisherId);
 }

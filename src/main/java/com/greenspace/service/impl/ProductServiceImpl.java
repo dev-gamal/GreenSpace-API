@@ -56,6 +56,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
+    public Page<ProductResponse> getAllAvailableProducts(ExchangeType exchangeType, Pageable pageable) {
+        return productRepository.findAvailableByExchangeType(exchangeType, pageable)
+                .map(productMapper::toResponse);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Page<ProductResponse> getLocalMarketProducts(ExchangeType exchangeType, String city, Pageable pageable) {
         return productRepository.findLocalMarketProducts(exchangeType, city, pageable)
                 .map(productMapper::toResponse);

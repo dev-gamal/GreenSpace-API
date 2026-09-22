@@ -16,6 +16,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Page<Product> findByPublisherId(Long publisherId, Pageable pageable);
 
+    @Query("SELECT p FROM Product p WHERE p.status = 'AVAILABLE' AND p.exchangeType = :exchangeType ORDER BY p.createdAt DESC")
+    Page<Product> findAvailableByExchangeType(@Param("exchangeType") ExchangeType exchangeType, Pageable pageable);
+
     @Query("SELECT p FROM Product p JOIN p.publisher u WHERE p.status = 'AVAILABLE' " +
             "AND p.exchangeType = :exchangeType " +
             "AND LOWER(u.city) LIKE LOWER(CONCAT('%', :city, '%')) ORDER BY p.createdAt DESC")

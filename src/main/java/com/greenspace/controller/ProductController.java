@@ -42,9 +42,12 @@ public class ProductController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Page<ProductResponse>> getMarketProducts(
             @RequestParam ExchangeType exchangeType,
-            @RequestParam String city,
+            @RequestParam(required = false) String city,
             @PageableDefault(size = 12, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-
+        
+        if (city == null || city.trim().isEmpty()) {
+            return ResponseEntity.ok(productService.getAllAvailableProducts(exchangeType, pageable));
+        }
         return ResponseEntity.ok(productService.getLocalMarketProducts(exchangeType, city, pageable));
     }
 
