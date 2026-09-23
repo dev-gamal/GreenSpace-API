@@ -15,4 +15,6 @@ public interface ProductService {
     Page<ProductResponse> getAllAvailableProducts(ExchangeType exchangeType, Pageable pageable);
     Page<ProductResponse> getLocalMarketProducts(ExchangeType exchangeType, String city, Pageable pageable);
     void deleteProduct(Long id, Long publisherId);
+    ProductResponse updateProductStatus(Long id, Long publisherId, com.greenspace.enums.ProductStatus status);
+    Page<ProductResponse> getAllProducts(Pageable pageable);
 }

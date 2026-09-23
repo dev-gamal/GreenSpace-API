@@ -10,6 +10,7 @@ import com.greenspace.repository.ReservationRepository;
 import com.greenspace.repository.UserRepository;
 import com.greenspace.service.GardenService;
 import com.greenspace.service.UserService;
+import com.greenspace.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,6 +31,7 @@ public class AdminController {
 
     private final UserService userService;
     private final GardenService gardenService;
+    private final ProductService productService;
 
     @GetMapping("/users")
     public ResponseEntity<List<UserResponse>> getAllUsers() {
@@ -62,6 +64,12 @@ public class AdminController {
     public ResponseEntity<org.springframework.data.domain.Page<com.greenspace.dto.response.GardenResponse>> getAllGardens(
             org.springframework.data.domain.Pageable pageable) {
         return ResponseEntity.ok(gardenService.getAllGardens(pageable));
+    }
+
+    @GetMapping("/products")
+    public ResponseEntity<org.springframework.data.domain.Page<com.greenspace.dto.response.ProductResponse>> getAllProducts(
+            org.springframework.data.domain.Pageable pageable) {
+        return ResponseEntity.ok(productService.getAllProducts(pageable));
     }
 
     @PutMapping("/users/{id}/toggle-block")

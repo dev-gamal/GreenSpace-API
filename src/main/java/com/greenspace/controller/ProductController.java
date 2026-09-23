@@ -66,4 +66,12 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/{id}/status")
+    @PreAuthorize("hasAnyAuthority('GARDENER', 'OWNER')")
+    public ResponseEntity<ProductResponse> updateStatus(
+            @PathVariable Long id,
+            @RequestParam Long publisherId,
+            @RequestParam com.greenspace.enums.ProductStatus status) {
+        return ResponseEntity.ok(productService.updateProductStatus(id, publisherId, status));
+    }
 }

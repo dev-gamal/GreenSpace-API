@@ -78,4 +78,24 @@ public class ProductServiceImpl implements ProductService {
         }
         productRepository.delete(product);
     }
+    @Override
+    public ProductResponse updateProductStatus(Long id, Long publisherId, ProductStatus status) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
+
+        if (!product.getPublisher().getId().equals(publisherId)) {
+            throw new IllegalArgumentException("Action not authorized.");
+        }
+        
+        product.setStatus(status);
+        Product updatedProduct = productRepository.save(product);
+        return productMapper.toResponse(updatedProduct);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ProductResponse> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable)
+                .map(productMapper::toResponse);
+    }
 }
