@@ -32,6 +32,7 @@ public class Product {
     @Column(name = "quantity_kg_or_units", nullable = false)
     private Double quantityKgOrUnits;
 
+    @Builder.Default
     private Double price = 0.0;
 
     @Enumerated(EnumType.STRING)
@@ -44,6 +45,7 @@ public class Product {
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20, columnDefinition = "varchar(20)")
+    @Builder.Default
     private ProductStatus status = ProductStatus.AVAILABLE;
 
     @Column(name = "image_url")

@@ -37,6 +37,7 @@ public class Reservation {
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20, columnDefinition = "varchar(20)")
+    @Builder.Default
     private ReservationStatus status = ReservationStatus.PENDING;
 
     @CreationTimestamp

@@ -46,10 +46,12 @@ public class Garden {
     private String rules;
 
     @Column(name = "has_tools")
+    @Builder.Default
     private Boolean hasTools = false;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20, columnDefinition = "varchar(20)")
+    @Builder.Default
     private GardenStatus status = GardenStatus.AVAILABLE;
 
     @CreationTimestamp

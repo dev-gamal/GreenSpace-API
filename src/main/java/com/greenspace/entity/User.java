@@ -47,6 +47,7 @@ public class User {
     private Role role;
 
     @Column(name = "is_blocked")
+    @Builder.Default
     private Boolean isBlocked = false;
 
     @CreationTimestamp
