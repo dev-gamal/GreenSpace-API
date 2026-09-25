@@ -15,4 +15,5 @@ public interface UserService {
     List<UserResponse> getUsersByRoleAndCity(Role role, String city);
     void blockedUser(Long id);
     List<UserResponse> searchUsers(String query);
+    UserResponse updateProfile(Long userId, com.greenspace.dto.request.UserProfileUpdateRequest request);
 }

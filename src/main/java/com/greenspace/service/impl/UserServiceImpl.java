@@ -86,4 +86,19 @@ public class UserServiceImpl implements UserService {
                 .map(userMapper::toResponse)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public UserResponse updateProfile(Long userId, com.greenspace.dto.request.UserProfileUpdateRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setPhoneNumber(request.getPhoneNumber());
+        user.setCity(request.getCity());
+        user.setPostalCode(request.getPostalCode());
+        
+        user = userRepository.save(user);
+        return userMapper.toResponse(user);
+    }
 }

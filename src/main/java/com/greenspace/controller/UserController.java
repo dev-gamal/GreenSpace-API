@@ -21,4 +21,13 @@ public class UserController {
     public ResponseEntity<List<UserResponse>> searchUsers(@RequestParam String query) {
         return ResponseEntity.ok(userService.searchUsers(query));
     }
+
+    @PutMapping("/profile")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<UserResponse> updateProfile(
+            @jakarta.validation.Valid @RequestBody com.greenspace.dto.request.UserProfileUpdateRequest request,
+            org.springframework.security.core.Authentication authentication) {
+        Long userId = Long.valueOf(authentication.getName());
+        return ResponseEntity.ok(userService.updateProfile(userId, request));
+    }
 }
