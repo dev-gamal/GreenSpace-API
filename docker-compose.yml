@@ -4,7 +4,7 @@ services:
   db:
     image: mysql:8.0
     container_name: greenspace-mysql
-    restart: no
+    restart: always
     environment:
       MYSQL_DATABASE: greenspace_db
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
