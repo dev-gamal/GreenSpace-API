@@ -35,6 +35,23 @@ src/main/java/com/greenspace
  └── websocket/    # WebSocket handlers and listeners
 ```
 
+## 📐 Diagrams & Architecture
+
+### Platform Use Cases
+An overview of how different user roles (Admin, Owner, Gardener) interact with the GreenSpace platform.
+
+![Use Case Diagram](docs/images/use-case-diagram.jpg)
+
+### Domain Class Diagram
+The core domain model, showing the relationships between Users, Gardens, Reservations, Products, and Chat Messages.
+
+![Class Diagram](docs/images/class-diagram.png)
+
+### Real-Time Chat WebSocket Sequence
+A detailed look at the WebSocket handshake, JWT validation via `ChannelInterceptor`, and message processing flow.
+
+![WebSocket Sequence Diagram](docs/images/websocket-sequence-diagram.png)
+
 ## 🔑 Core Features
 
 1. **Authentication & Authorization**: Role-based access control (ADMIN, OWNER, GARDENER) using JWT.
@@ -82,6 +99,8 @@ docker-compose up -d --build
 
 Once the application is running, you can explore and test the API endpoints interactively using Swagger UI:
 
+![Swagger UI](docs/images/swagger-ui.png)
+
 - **Swagger UI**: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
 - **OpenAPI JSON Spec**: [http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs)
 
@@ -91,6 +110,12 @@ To run the unit and integration tests:
 ```bash
 ./mvnw test
 ```
+
+## 📋 Project Management
+
+We manage the development of GreenSpace using a Kanban-style agile workflow to track backlog, active development, testing, and completed features.
+
+![Kanban Board](docs/images/kanban-board.png)
 
 ## 🤝 Contributing
 
