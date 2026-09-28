@@ -43,10 +43,11 @@ public class AdminController {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
-    @GetMapping("/users/search")
+    @GetMapping("/users/filter")
     public ResponseEntity<List<UserResponse>> getUsersByRoleAndCity(@RequestParam String role, @RequestParam String city) {
         return ResponseEntity.ok(userService.getUsersByRoleAndCity(role.equalsIgnoreCase("ADMIN") ? null : role.equalsIgnoreCase("OWNER") ? Role.OWNER : null, city));
     }
+
 
     @GetMapping("/stats")
     public ResponseEntity<AdminStateResponse> getDashboard() {
