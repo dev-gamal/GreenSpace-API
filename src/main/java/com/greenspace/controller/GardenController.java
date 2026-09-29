@@ -3,6 +3,7 @@ package com.greenspace.controller;
 import com.greenspace.dto.request.GardenRequest;
 import com.greenspace.dto.response.GardenResponse;
 import com.greenspace.enums.GardenStatus;
+import com.greenspace.security.CustomUserDetails;
 import com.greenspace.service.GardenService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -65,7 +66,8 @@ public class GardenController {
             @PathVariable Long id,
             @Valid @RequestBody GardenRequest request,
             Authentication authentication) {
-        Long callerId = Long.valueOf(authentication.getName());
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long callerId = userDetails.getUser().getId();
         boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"));
         return ResponseEntity.ok(gardenService.updateGarden(id, request, request.getPhotoUrls() != null ? request.getPhotoUrls() : List.of(), callerId, isAdmin));
     }
@@ -83,7 +85,8 @@ public class GardenController {
     public ResponseEntity<Void> deleteGarden(
             @PathVariable Long id,
             Authentication authentication) {
-        Long callerId = Long.valueOf(authentication.getName());
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long callerId = userDetails.getUser().getId();
         boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"));
         gardenService.deleteGarden(id, callerId, isAdmin);
         return ResponseEntity.noContent().build();

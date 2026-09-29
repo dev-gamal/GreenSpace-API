@@ -1,6 +1,7 @@
 package com.greenspace.controller;
 
 import com.greenspace.dto.response.UserResponse;
+import com.greenspace.security.CustomUserDetails;
 import com.greenspace.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,8 @@ public class UserController {
     public ResponseEntity<UserResponse> updateProfile(
             @jakarta.validation.Valid @RequestBody com.greenspace.dto.request.UserProfileUpdateRequest request,
             org.springframework.security.core.Authentication authentication) {
-        Long userId = Long.valueOf(authentication.getName());
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long userId = userDetails.getUser().getId();
         return ResponseEntity.ok(userService.updateProfile(userId, request));
     }
 }
